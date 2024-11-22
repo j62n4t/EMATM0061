@@ -1,152 +1,155 @@
 java c
-Assignment 2 
-EMATM0061: Statistical Computing and Empirical Methods, TB1, 2024 
-Introduction 
-Create an R Markdown for assignment 
-First, it is recommended that you create a single R Markdown document to include   your solutions, with headings created by heading codes such as “## 1.1 (Q1)”, “## 3 (Q1)”, etc.
-It is a good practice to use R Markdown to organise your code and results. You can start with the template called Assignment02_TEMPLATE.Rmd which can be downloaded via Blackboard.
-In Section 1, you will need to use R programming to complete the tasks. In section 2 and 3, it is not required to write R code.
-You can optionally hand in this assignment by 13:00 Tuesday 1 October. This will   help us understand your work but will not count towards your final grade. If you    want to hand in the assignment, please submit a PDF file containing your answers  (click on the “Assignment 02” under the assignment tab at Blackboards to upload the file). There is no requirement on how the PDF file is generated. One example is to choose the output of R-markdown as PDF (which may require LaTex to be installed in your computer). Another example is to choose a html output at R-markdown and convert the html file into a PDF file. If you have multiple PDF files, please combine them into a single PDF file before the submission. 
-Load packages 
-Then we need to load two packages, namely Stat2Data and tidyverse, before answering the questions. If they haven’t been installed in your computer, please use install.packages() to install them first.
-1.      Load the tidyverse package:
-library(tidyverse)
-2.      Load the Stat2Data package and then the dataset Hawks:
-library(Stat2Data) data("Hawks")
-1. Data Wrangling 
-This part is mainly about data wrangling. Basic concepts of data wrangling can be found in lecture 4.
-1.1 Select and filter 
-(Q1). Use acombination of the select() and filter() functions to generate a data
-frame. called “hSF” which is a sub-table of the original Hawks data frame, such that
-1.     Your data frame. should include the columns:
-a)     “Wing”
-b)     “Weight”
-c)     “Tail”
-2.     Your data frame. should contain a row for every hawk such that:
-a)     They belong to the species of Red-Tailed hawks
-b)     They have weight at least 1kg.
-3.     Use the pipe operator “%>%” to simplify your code.
-The data frame. should look like this:## Wing Weight Tail## 1 412 1090 230## 2 412 1210 210## 3 405 1120 238## 4 393 1010 222## 5 371 1010 217
-(Q2) How many variables does the data frame. hSF have? What would you say to communicate this information to a Machine Learning practitioner?
-How many examples does the data frame. hSF have? How many observations? How many cases?
-1.2 The arrange function 
-(Q1) Use the arrange() function to sort the hSF data frame. created in the previous section so that the rows appear in order of increasing wingspan.
-Then use the head command to printout the top five rows of your sorted data frame. Your results should look something like this:## Wing Weight Tail## 1 37.2 1180 210## 2 111.0 1340 226## 3 199.0 1290 222## 4 241.0 1320 235## 5 262.0 1020 200
-1.3 Join and rename functions 
-The species of Hawks within the data frame. “Hawks” have been indicated via a two- letter code (e.g., RT, CH, SS). The correspondence between these codes and the full    names is given by the following data frame.
-##   species_code species_name_full
-## 1           CH          Cooper's
-## 2           RT        Red-tailed
-## 3           SS     Sharp-shinned
-(Q1). Use data.frame() to create a data frame. that is called
-hawkSpeciesNameCodes and is the same as the above data frame. (i.e., containing the correspondence between codes and the full species names).
-(Q2). Use a combination of the functions left_join(), therename() and the select() functions to create a new data frame. called “hawksFullName” which is the same as   the “Hawks” data frame. except that the Species column contains the full names rather than the two-letter codes.
-(Q3). Use acombination of the head() and select() functions to printout the top seven rows of the columns “Species”, “Wing” and “Weight” of the data frame. called “hawksFullName”. Do this without modifying the data frame. you just created. Your result should something like this: 
-## Species Wing Weight## 1 Red-tailed 385 920## 2 Red-tailed 376 930## 3 Red-tailed 381 990## 4 Cooper's 265 470## 5 Sharp-shinned 205 170## 6 Red-tailed 412 1090## 7 Red-tailed 370 960
-Does it matter what type of join function you use here? In what situations would it make a difference?
-1.4 The mutate function 
-Suppose that the fictitious “Healthy Hawks Society” has proposed a new measure called the “bird BMI” which attempts to measure the mass of a hawk standardized by their wingspan. The “bird BMI” is equal to the weight of the hawk (in grams) divided by their wingspan (in millimeters) squared. That is,
-Bird-BMI : = 1000 × Weight/Wing-pan2 .
-(Q1). Use the mutate(), select() and arrange() functions to create a new data frame. called “hawksWithBMI” which has the same number of rows as the original Hawks data frame. but only two columns - one with their Species and one with their   “bird BMI”. Also, arrange the rows in descending order of “bird BMI”. The top 8 rows of your data frame. should look something like this: 
-## Species bird_BMI## 1 RT 852.69973## 2 RT 108.75741## 3 RT 32.57493## 4 RT 22.72688## 5 CH 22.40818## 6 RT 19.54932## 7 CH 15.21998## 8 RT 14.85927
-1.5 Summarize and group-by functions 
-Using the data frame. “hawksFullName”, from Section 1.3 above, to do the following tasks:
-(Q1). In combination with the summarize() and the group_by functions, create a summary table, broken down by Hawk species, which contains the following summary quantities:
-1.     The number of rows (num_rows);
-2.     The average wingspan in centimeters (mn_wing);
-3.     The median wingspan in centimeters (nd_wing);
-4.     The trimmed average wingspan in centimeters with trim=0.1, i.e., the mean of the numbers after the 10% largest and the 10% smallest values being removed (t_mn_wing);
-5.     The biggest ratio between wingspan and tail length (b_wt_ratio).Hint: type?summarize to see a list of useful functions (mean, sum, etc) that can be used to compute the summary quantities. Your final result should look something  like this:
-## # A tibble: 3 × 6
-##   Species       num_rows mn_wing md_wing t_mn_wing b_wt_ratio
-##                                
-## 1 Cooper's            70    244.     240      243.       1.67
-## 2 Red-tailed         577    383.     384      385.       3.16
-## 3 Sharp-shinned      261    185.     191      184.       1.67
-(Q2). Next create a summary table of the following form. Your summary table will show the number of missing values, broken down by species, for the columns Wing, Weight, Culmen, Hallux, Tail, StandardTail, Tarsus, and Crop. You can complete this task by combining the select(), group_by(), summarize(), across(), everything(), sum() and is.na() functions. You should end with a summary table of the following  form.:
-## # A tibble: 3 × 9
-##   Species        Wing Weight Culmen Hallux  Tail StandardTail Tarsus
-Crop
-##                             
+Assignment 1 
+EMATM0061: Statistical Computing and Empirical Methods, Data Science MSc Teaching Block 1, 2024
+Before starting the assignment it is recommended that you first watch video lectures 2 and 3. You don’t need to hand in this assignment.
+1 Create a data frame 
+First open RStudio.
+Step 1. Within RStudio, find the Console window.  In the Console, write a command to create a vector called animals which contains the names of a few animals. What type of vector is this?
+Your vector might look something like this:
+##  [1]  "Snake"  "Ostrich"  "Cat"  "Spider"
+Step 2. Create a vector of the same length called num legs which gives the number of legs of the different animals. Your second vector will look something like this:
+##  [1]  0  2  4  8Step 3. Now combine these two vectors in a data frame. called  animals df which has two columns - one with the names of animals, and another with their respective numbers of legs. The result should look something like this:
+##  animals  num_legs
+##  1  Snake  0
+##  2  Ostrich  2
+##  3  Cat  4
+##  4  Spider  8Step 4. Check the Environment window and find out what objects  (variables) are available. You should be able to find objects called animals, num legs, and animals df.  Can you find the data type of these objects there?
+The functions required by the tasks above can be found in the example below.
+city_name  <- c( "Bristol", "Manchester", "Birmingham", "London") # vector of city names population <- c(0 .5,0 .5,1,9) # vector of populations
+cities_populations_df  <-data.frame(city_name,population) # generating data frame.
+2 Check and delete objects 
+Apart from creating objects, you can also check and delete them.  In this question, you will also learn how to find help documents of R functions.
+Step 1. After you finish creating the data frame. required by Question 1, get a list of objects in the working environment.
+• You can use the function ls() which returns a vector of character strings giving the names of the objects in the environment. Type ?ls to check its usage.
+•  Do you find the objects animals, num legs, and animals df again?Sept 2. Use the function rm (type ?rm to see examples of using rm) to remove the objects num legs from the working environment.  After that, check the list of objects in the current environment again, to see if num legs has been removed.
+Step 3. Remove all objects in the working environment.
+3    Create a data frame in R Scripts 
+In Question 1, you created a data frame. in the console in RStudio.  Now you will create an R script. and create a data frame. using the script.
+Step 0. Remove all objects in the working environment, similar to what you have done in Question 2.
+Step 1. Go to File –> New File –> R Script. to create your script.  Save the file by clicking File –> Save and giving the file a name of your choice eg.  “myFirstRScript” .
+Step 2. Now you can start writing codes in the script.  Create a data frame. animals df, using the same code you did in Question 1
+Step 3. You can run all the code within your script. by clicking on the “Source” button on the top right (alternative click Code -> Source).
+Step 4. Get a list of objects in the working environment.  Is the list the same as what you got in Question 2 Step 1?
+4    Create a data frame in R Markdown 
+Let’s create an R markdown with html output as follows:
+File  ->  New  File  ->  R  Markdown  . . .
+You can then choose:
+• A title for your document;
+• An author name (for example your name);
+• An output format. Let’s choose HTML.
+Then click  “OK” to create an R markdown.  This will create a template project.  Explore the project and note its key features:
+1.  There is a block of YAML header at the start of the document which gives key information eg. title and output format.
+2. You can create headings of sections with “#” .  Similarly, headings of subsections can be created with “##” and so on.
+3. You can embed blocks of R code by using ``` {r} before the R code and ``` afterwards.
+4.  By default both the code and its output are displayed.  If you only want to include the output but not the code itself include the option echo  =  FALSE in the code prefix.  If you don’t want to include either then include the option include  =  FALSE.
+5. You can include hyperlinks by writing .Save your R markdown file as “MyFirstRMarkdown” . Remove everything in your R mark- down except for the YAML section at the top with the title, author, date, and output.  Then do the following steps.
+Step 1. Insert a block of R code.  In this block of code, create a data frame. animals df, using the same code you did in Question 1.  In R Markdown, a block of code starts with  ``` {r} and ends with ```
+Step 2. Insert another block of code to print animals df.
+Step  3. You can then generate an HTML file with the  “Knit” button just  above your scripting window. Check what you have in the HTML file.
+5    Matrix operations Use the seq() function to generate a sequence of numbers starting at 12 and decreasing to 2 in steps of -2.  Call this vector x vect.  You may want to run ?seq or help(seq) to help you do this. The vector x vect should look like this:
+##  [1]  12  10  8  6  4  2
+Now convert the vector x vect into a matrix (with 2 rows and 3 coloumns) called X, using the matrix() function. The result should look like this:##        [,1] [,2] [,3]##  [1,]  12    8    4##  [2,]  10    6    2
+Next create a 2 by 2 matrix called Y consisting of a sequence of four numbers from 1-4.  The matrix Y should look like this:
+##        [,1]  [,2]
+##  [1,]  1      3
+##  [2,]  2      4
+In addition, create another 2 by 2 matrix called Z which looks as follows:
+##        [,1]  [,2]
+##  [1,]  4      8
+##  [2,]  6      10
+Recall that for 2 by 2 matrices A, the transpose AT  is given by
 
-## 1 Cooper's          1    代 写EMATM0061: Statistical Computing and Empirical Methods, TB1, 2024 Assignment 2R
-代做程序编程语言  0      0      0     0           19     62
-21
-## 2 Red-tailed        0      5      4      3     0          250    538
-254
-## 3 Sharp-shinned     0      5      3      3     0           68    233
-68
-2. Random experiments, events and sample spaces, and the set theory 
-In this exercise, we will learn about random experiments, events and sample spaces and set theory that were introduced in Lecture 5.
-In this section, you are not required to compute your results using R codes. If you
-want to write math formulas in R-markdown, the document called “Assignment_R    MarkdownMathformulasandSymbolsExamples.rmd” (available under the “resource
-list” tab at Blackboard course webpage) provides a list of examples for your reference.
-2.1 Random experiments, events and sample spaces (Q1) Firstly, write down the definition of a random experiment, event and sample space. This question aims to help you recall the basic concepts before completing   the subsequent tasks.
-(Q2) Consider a random experiment of rolling a dice twice. Give an example of what  is an event in this random experiment. Also, can you write down the sample space as a set? What is the total number of different events in this experiment? Is the empty    set considered as an event?
-2.2 Set theory 
-Remember that a set is just a collection of objects. All that matters for the identity of a set is the objects it contains. In particular, the elements within the set are unordered, so for example the set {1, 2, 3} is exactly the same as the set {3, 2, 1}. In addition, since sets are just collections of objects, each object can only be either included or excluded and multiplicities do not change the nature of the set. In particular, the set {1, 2, 2, 2, 3, 3} is exactly the same as the set A = {1, 2, 3}. In   general there is no concept of “position” within a set, unlike a vector or matrix. 
-(Q1) Set operations:
-Let the sets A, B, C be defined by A := {1, 2, 3}, B := {2, 4, 6}, C := {4, 5, 6}.
-1.     What are the unions A ∪ B and A ∪ C?
-2.     What are the intersections A ∩ B and A ∩ C?
-3.     What are the complements A ∖ B and A ∖ C?
-4.     AreA and B disjoint? AreA and C disjoint?
-5.     Are B and A ∖ B disjoint?
-6.     Write down an arbitrary partition of {1,2,3,4,5,6} consisting of two sets. Also, write down another partition of {1,2,3,4,5,6} consisting of three sets.
-(Q2) Complements, subsets and De Morgan’s laws
-Let Ω be a sample space. Recall that for an event A  ⊆ Ω the complement Ac  : = Ω ∖ A : = {w  ∈ Ω:w ∉ A}. Take a pair of events A  ⊆ Ω and B  ⊆ Ω .
-1.      Can you give an expression for (Ac )c  without using the notion of a complement?
-2.     What is Ωc?
-3.      (Subsets) Show that if A ⊆ B, then Bc   ⊆ Ac.
-4.      (De Morgan’s laws) Show that (A ∩ B)c   = Ac  ∪ Bc. Let’s suppose we have a sequence of events A1, A2, ⋯ , Ak   ⊆ Ω . Can you write out an expression for (∩k(k)= 1 Ak )c?
-5.      (De Morgan’s laws) Show that (A ∪ B)c   = Ac  ∩ Bc.
-6.     Let’s suppose we have a sequence of events A1, A2, ⋯ , Ak   ⊆ Ω . Can you write
-out an expression for (∪k(k)= 1 Ak )c?
-(Q3) Cardinality and the set of all subsets:
-Suppose that Ω = {w1, w2, ⋯ , wk } contains K elements for some natural number K. Here Ω has cardinality K.
-Let E be aset of all subsets of Ω, i.e., E : = {A|A ⊂ Ω}. Note that here E is a set. Give a formula for the cardinality of E in terms of K.
-(Q4) Disjointness and partitions.
-Suppose we have a sample space Ω, and events A1, A2, A3, A4  are subsets of Ω .
-1.      Can you think of a set which is disjoint from every other set? That is, find a set A ⊆ Ω such that A ∩ B  = ∅ for all B ⊆ Ω .
-2.      Define events S1  : = A1, S2   = A2  ∖ A1, S3   = A3  ∖ (A1  ∪ A2), S4   = A4  ∖
-(A1  ∪ A2 ∪ A3). Show that S1, S2, S3, S4  form. a partition of A1  ∪ A2  ∪ A3  ∪ A4 . (Q5) Indicator function.
-Suppose we have a sample space Ω, and the event A is a subset of Ω. Let 1A  be the indicator function of A.
-1.     Write down the indicator function 1Acof Ac  (use 1A in your formula).
-2.      Can you find a set B whose indicator function is 1Ac   + 1A?
-3.      Recall that 1A∩B   = 1A  ⋅ 1B  and 1A∪B   = max(1A, 1B ) = 1A  + 1B  − 1A  ⋅ 1B  forany A ⊆ Ω and B ⊆ Ω . Combining this with the conclusion from Question  (Q5) 1, use indicator functions to prove (A ∩ B)c   = Ac  ∪ Bc  (De Morgan’s laws).
-(Q6) Uncountable infinities (this is an optional extra).
-This is a challenging optional extra. You may want to return to this question once you have completed all other questions.
-Show that the set of numbers Ω : = [0, 1] is uncountably infinite.
-3. Probability theory 
-In this section we consider some of the concepts introduced in Lecture 6.
-Recall that we have introduced the three key rules of probability. Given a sample space Ω along with a well-behaved collection of events ℰ, a probability ℙ is a function which assigns a number ℙ(A) to each event A ∈ ℰ, and satisfies rules 1, 2, and 3:
-: ℙ(A) ≥ 0 for any event A  ∈ ℰ
-: ℙ(Ω) = 1 for sample space Ω
-: For pairwise disjoint events A1, A2, ⋯ in ℰ, we have
+Use the t() function to compute YT  and ZT .Matrix sums. Now compute the matrix sums Y + Z  and Y + Z.  The result in both cases should be the same.  We call such operations commutative.  This means that reversing the order does not change the result.
+Matrix multiplication. Use R to compute the matrix products YZ and ZY. Are the results the same in both cases? Is matrix multiplication commutative?
+Recall that the matrix multiplication between two 2 by 2 matrices A and B, is defined as
+In addition, use R to compute the matrix product YX . You should get something like this:##        [,1] [,2] [,3]##  [1,]  42   26  10##  [2,]  64   40  16
+What happens if you attempt to compute the matrix product XY? Explain the error message you get.Matrix element-wise multiplication. Use R to compute the element-wise matrix products Y Θ Z and Y Θ Z.  Are the results the same in both cases?  Is element-wise multiplication commutative?
+Recall that the element-wise matrix multiplication between A and B is defined as
 
-3.1 Rules of probability 
-(Q1) Construct a probability function based on the Rules of probabilityConsider a sample space Ω  = {a, b, c} and a set of events ℰ  = {A  ⊆ Ω} (i.e., ℰ consists of all subsets of Ω). Based on the rules of probability, find a probability function ℙ: ℰ → [0, 1] that satisfies 
-ℙ({a, b}) = 0.6     and ℙ({b, c}) = 0.5.
-In your example, you need to define a function called ℙ . The function maps each event in ℰ to a number. Make sure that your function ℙ satisfies the three rules, but you don’t need to write down the proof (that it satisfies the three rules). 
-(Q2) Verify that the following probability space satisfies the rules of probability.
-Consider a setting in which the sample space Ω  = {0, 1}, and ℰ  = {A  ⊆ Ω} =
-{∅, {0}, {1}, {0, 1}}. For a fixed q  ∈  [0, 1], define a function ℙ: ℰ  →  [0, 1] by
-ℙ(∅) = 0,  ℙ({0}) =  1 − q,  ℙ({1}) = q,  ℙ({0, 1}) =  1.
-Show that the probability space (Ω, ℰ, ℙ) satisfies the three rules of probability.
-3.2 Deriving new properties from the rules of probability 
-(Q1) Union of a finite sequence of disjoint events. Recall that in Rule 3,we have
-for an infinite sequence of pairwise disjoint events A1, A2, ⋯ . Show that for a finite sequence of disjoint events A1, A2, ⋯ An, for any integer n bigger than 1, the below equality holds as a consequence of Rule 3:
-Please note that in lefthand side of the equation above we have the union of a finite sequence instead of an infinite sequence.
-(Q2) Probability of a complement.
-Prove that if Ω is a sample space, S  ⊆ Ω is an event and SC  : = Ω ∖ S is its complement, then we have
-ℙ(SC ) = 1 − ℙ(S).
-(Q3) The union bound
-In Rule 3, for pairwise disjoint events A1, A2, ⋯, we have ∞
+Matrix inverse. Compute the matrix inverse Y −1  via the solve() function: solve(Y)
+You should get something like this##        [,1] [,2]##  [1,]  -2   1.5##  [2,]  1    -0.5
+Next, check what you get from computing Y −1Y in R.
+Now compute Y −1X . Your result should look like this:##        [,1] [,2] [,3]##  [1,]  -9   -7    -5##  [2,]  7     5      3Can you do this (obtain the results of Y−1X) without first computing Y −1?  Try running the help command on the solve() function by typing ?solve into the R console to find out how to do this.
+6 Writing a function within R 
+First, create an R script. (see also Question 3), and saving it using the name mySecondRScript. To do the following steps, it is good to know how a function is defined in R as well as basiccontrol flow statements in R (e.g., if . . .else . . ., and for). You may want to first look at the sample function called is prime (provided at the end of this question) for function definition and control flow statements, 代 写EMATM0061: Statistical Computing and Empirical Methods, Data Science MSc Teaching Block 1, 2024 Assignment 1Python
+代做程序编程语言before you continue.Step 1. Within your script. create a short function called myFirstRFunc which takes in a single numerical argument n and outputs the sum of all those numbers strictly below n which are divisible by either 2 or 7 or both.
+For example, if n = 14 then it should be the sum of 2, 4, 6, 7, 8, 10, 12, so myFirstRFunc applied to 14 gives the answer 2 + 4 + 6 + 7 + 8 + 10 + 12 = 49.
+Make sure your function includes useful comments. You may want to include a check so that your function produces an error if it is given an argument which isn’t a non-negative integer.
+Step 2. Run the script. by clicking on the “Source” button on the top right. Then check what
+you get if you apply the function to 1000, i.e., myFirstRFunc(1000)
+If you have been successful your function should produce the following output. ##  [1]  284787
+How to write a function in R? An example. 
+is_prime  <- function(num){
+#  This  example  function  takes  as  input  a  positive  integer  and  outputs  Boolean
+stopifnot(is .numeric(num),num%%1==0,num>=0)  #  Stop  if  the  input  is  not  a  non-negative  integer
+t_val  <- TRUE # Initialise truth value output with TRUE
+if(num<2){
+t_val<-FALSE # Output FALSE if input is either 0 or 1
+}else  if(num>2){
+for(i  in  2:sqrt(num)){  #  Check  possible  divisors  i  no  greater  than  sqrt(num)
+if(num%%i==0){
+t_val<-FALSE
+break          #  if  i  divides  num  then  num  is  not  prime
+}
+}
+}
+return(t_val)  #  return  the  truth  value  which  says  whether  or  not  num  is  prime
+}
+7    Futher R Markdown exercises 
+Next we will learn about how to include plots and mathematical formulae in R Markdown.
+First, similar to what you did to set up MyFirstRMarkdown in Question 4, create a new R Markdown file and save it using the name Assignment1RMarkdown.
+Step 1. Within your R markdown insert a section heading called “Wave plot” .
+Step 2. Insert a code block to do the following.
+•  Define  a vector called x consisting of a sequence which starts at 0 and goes to  20 in increments of 0.01. You can do this using the seq() function.
+•  Next create a vector called y, which is of the same length as x, such that the ith  entry of y is equal to the sin function of the ith  entry of x.  This can be done via the R function sin().
+•  Then create a data frame. called sin df with two columns: x and y. You can inspect the first few rows of your data frame. with the head() function like this:
+head(sin_df,3)
+##        x              y##  1  0 .00  0 .000000000##  2  0 .01  0 .009999833##  3  0 .02  0 .01999866
+If you have been successful you will observe a similar output after performing “knit” .
+• Write a statement to plot sin df.You can do this using the plot() function.  This aims to display a plot with x as the x-axis and y as the y-axis.
+Step 3. Insert the following mathematical formula into your Markdown file:
+sin2 (x) + cos2 (x) = 1.
+About how to insert in the Markdown file mathematical formulae. 
+You can use R Markdown to render mathematical formulae.  For example, you can write y = sin(x) inline to display “y = sin(x)” .
+You can also display more complex expressions.  For example, the code below gives rise to the following output.
+\[\sin(x)=\sum_{n=1}^{\infty}(-1)^{n+1}\cdot  \frac{x^{2n-1}}{(2n-1)!}
+\approx  x-\frac{x^3}{3!}+\frac{x^5}{5!}-\frac{x^7}{7!}\ldots .  \]
+The output will be:
 
-Recall that in the lecture we have also shown the union bound as a consequence of the rules of probability: for asequence of events S1, S2, ⋯, we have ℙ(∪i∞=1 Si) ≤ ∑∞ i=1ℙ(Si). 
-Give an example of a probability space and a sequence of sets S1, S2, ⋯, such that 1 Si ) ≠ ∑1 ℙ (Si ).
-(Q4) Probability of union and intersection of events. Show that for events A ⊆ Ω and B  ⊆ Ω, we have
-ℙ(A ∪ B) = ℙ(A) + ℙ(B) − ℙ(A ∩ B)
+\[  A=\left(\begin{matrix}  a_{11}    a_{12}\\  a_{21}    a_{22}  \end{matrix}\right) .  \] The output will be:
+
+For information about writing mathematical formulae in Rmarkdown documents visit:
+https://bookdown.org/yihui/bookdown/markdown-extensions-by-bookdown.html#equations 
+8    Version control with RStudio and git 
+Next we will combine RStudio with git to create an R project with version control.
+8.1    Connect RStudio to git 
+If you do not yet have a GitHub account sign up for one here https://github.com/. 
+Next, connect your RStudio to git via the usethis R package. Within RStudio perform. the following steps within your R console:
+install .packages("usethis")  #  Install  the  "usethis"  R  package
+library(usethis)  #  Load  the  "usethis"  R  libraryuse_git_config(user .name  =  "Bob  Smith",  user .email  =  "bob@example .org")  #  Set  profile  infoThe first step installs the usethis R package.  The second step loads the usethis R library. You may be prompted to install RTools at this stage.  If so follow the links provided by RStudio. The third step sets your git profile information.  The user.name can be the same as the username you used to set up your git profile, but it is not necessary.  The email needs to be the same email address as you used to set up your git profile.
+8.2    Create an R project with version control 
+1. Create a project on GitHub. Go to https://github.com/within your web browser and log into your git account. Create a new repository by clicking the green “New” button. Next:
+–  Give your repository a name eg.  “firstRProject” .
+–  Give your repository a description eg.  “This is a repo for an R project” .
+–  Check the box which says “Add a README file” .
+–  Always be mindful of whether your repo is public or private.
+–  Click the green “Create repository” button.
+You have now created a git repository.  Next click the green  “Code” button and copy the url provided. This is the repository url.
+2.  Create a project at RStudio. Go back to RStudio. Then go to: File  ->  New  Project . . .  ->  Version  Control  ->  Git
+–  Below “Repository URL:” Paste the repository url which you copied from your git repo. (if you have chosen your project to be private, you may be asked to input your account details. Follow the instructions to gain access).
+–  Below “Project directory name:” Choose a directory name.
+–  Below “Create project as a subdirectory of:” Choose where to store your project on your local machine.
+–  Check the box marked “Open in new session” .
+–  Click create project.
+You have now created an R project with version control!
+8.3    Committing and pushing 
+Within your new project click
+File  ->  New  File  ->  R  Script.
+Type some R code in your new R script. e.g.
+a<-1
+Now save your new file by selecting File — > Save before giving a name.
+commit.  Next go to the git tab at the top right of your screen.  Then click the  “commit” button.
+On the left you will see a collection of check boxes.  Here you can choose which files you want to add to your git repo. I suggest for now you check all of the files.Write a commit message in the “Commit message” box eg.   “This  is my first commit” .  It’s good practice to always include a commit message. Click the commit button. You should see a message which describes your changes. Commits act as a “snapshot” which records the current state of your repository.push.  You have now taken a local “snapshot” of your repository by performing a “commit” . Next you want to record this snapshot on the central repository. This is done by performing a “Push” .  All you have to do is press the green “Push” button within the git panel in RStudio. You may be asked to enter your password or personal access tokens (you can create your token if needed https://github.com/settings/tokens). You typically only have to do this once.Now check that your push has been successful. Go back to https://github.com/ and log into your account if you are not already logged in.  Go to the repositories section and click on the name of the repository you created in the previous stage of this assignment.  You should see a record of your most recent commit.Additionally, you may want to move your previous R script. entitled  “myFirstRScript” (from Question 3) into this project. You can then “commit” and “push” to upload your script. to your git account.
 
          
 加QQ：99515681  WX：codinghelp  Email: 99515681@qq.com
